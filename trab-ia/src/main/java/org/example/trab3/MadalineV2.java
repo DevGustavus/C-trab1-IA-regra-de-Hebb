@@ -20,8 +20,8 @@ public class MadalineV2 {
 
         // Inicialização das variáveis
         double limiar = 0.0;
-        double alfa = 0.1;  // Aumentei a taxa de aprendizado
-        double erroTolerado = 0.1;  // Aumentei o erro tolerado para permitir mais ciclos de treinamento
+        double alfa = 0.1;
+        double erroTolerado = 0.1;
 
         // Pesos e Biases
         double[][] v = new double[entradas][numSaidas];
