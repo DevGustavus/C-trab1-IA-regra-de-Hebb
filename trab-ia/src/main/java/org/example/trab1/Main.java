@@ -3,6 +3,7 @@ package org.example.trab1;
 import javax.swing.*;
 import java.awt.*;
 
+// ================================= HEBB =================================
 public class Main {
 
     private static final int SIZE = 10; // Tamanho da matriz (10x10)

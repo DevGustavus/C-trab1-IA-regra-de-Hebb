@@ -3,161 +3,168 @@ package org.example.trab2;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Random;
+import java.util.Scanner;
 
+// ================================= PERCEPTRON =================================
 public class Main {
 
-    private static final int SIZE = 10; // Tamanho da matriz (10x10)
-    private int[][] firstLetterMatrix = new int[SIZE][SIZE];
-    private int[][] secondLetterMatrix = new int[SIZE][SIZE];
-    private int[][] testMatrix = new int[SIZE][SIZE];
-    private double[][] weights = new double[SIZE][SIZE]; // Pesos para cada célula
-    private double bias = 0; // Bias do Perceptron
-    private final double LEARNING_RATE = 0.05; // Taxa de aprendizado ajustada
-    private final int EPOCHS = 5000; // Número de épocas ajustado
+    float[][] entrada = new float[2][4];
+    int opc = 0;
+    float limiar = 0;
+    float[] w = new float[4]; // Um peso para cada entrada.
+    int[] target = new int[2]; // Duas possíveis saídas.
+    float b;
+    float alfa = 0.01f; // Taxa de aprendizagem 0 < X <= 1.
+    float yLiq = 0;
+    int contCiclo = 0;
+    float y;
+    float yTeste;
+    int lin, col;
+    int condErro = 1;
+    float teste;
+
+    // Construtor
+    public Main() {
+        // Inicializando os alvos
+        target[0] = -1; // Reconhecimento de A.
+        target[1] = 1;  // Reconhecimento de B.
+
+        // Inicializando os pesos
+        w[0] = 0.5f;
+        w[1] = -0.1f;
+        w[2] = 0.4f;
+        w[3] = -0.27f;
+
+        // Inicializando o bias
+        b = 0.3256f;
+
+        // Inicializando as entradas
+        entrada[0][0] = -1;
+        entrada[0][1] = -1;
+        entrada[0][2] = 1;
+        entrada[0][3] = 1;
+
+        entrada[1][0] = 1;
+        entrada[1][1] = -1;
+        entrada[1][2] = 1;
+        entrada[1][3] = -1;
+    }
+
+    public void executarPerceptron() {
+        Scanner scanner = new Scanner(System.in);
+
+        while (opc != 3) {
+            System.out.println("\n\n ***** Programa Perceptron *****");
+            System.out.println("Digite 1 para treinar a rede");
+            System.out.println("Digite 2 para operar");
+            System.out.println("Digite 3 para Sair");
+            System.out.print("-> ");
+            opc = scanner.nextInt();
+
+            if (opc == 1) {
+                while (condErro == 1) {
+                    condErro = 0;
+                    lin = 0;
+
+                    // Aqui lin deve ser incrementado somente após o fim de cada ciclo de treinamento.
+                    while (lin < 2) {
+                        yLiq = 0;
+                        col = 0;
+
+                        while (col < 4) {
+                            yLiq += entrada[lin][col] * w[col];
+                            col++; // Incrementa a coluna após o cálculo
+                        }
+
+                        // Adiciona o bias após o cálculo de todas as entradas
+                        yLiq += b;
+
+                        // Função de ativação
+                        if (yLiq >= limiar) {
+                            y = 1;
+                        } else {
+                            y = -1;
+                        }
+
+                        // Exibe o valor calculado e o alvo esperado
+                        System.out.printf("\n y: %.2f - target: %.2f", y, (float) target[lin]);
+
+                        // O segredo do perceptron está aqui: verifica se há erro
+                        if (y != target[lin]) {
+                            condErro = 1;
+                            col = 0;
+
+                            // Algoritmo para correção dos pesos e bias
+                            while (col < 4) {
+                                w[col] += alfa * (target[lin] - y) * entrada[lin][col];
+                                col++;
+                            }
+                            // Atualiza o bias com a mesma lógica
+                            b += alfa * (target[lin] - y);
+                        }
+
+                        // Incrementa lin apenas aqui para passar para o próximo conjunto de dados
+                        lin++;
+                    }
+                    // Exibe o número do ciclo
+                    System.out.printf("\n Ciclo: %d \n", contCiclo);
+                    contCiclo++;
+                }
+                System.out.println("\n Rede treinada!");
+
+                // Exibe os pesos
+                col = 0;
+                while (col < 4) {
+                    System.out.printf("\n Peso [%d]: %.2f", col, w[col]);
+                    col++;
+                }
+                // Exibe o valor do bias
+                System.out.printf("\n Bias: %.2f", b);
+            }
+
+            if (opc == 2) {
+                System.out.printf("\n\t ----> Testando a rede treinada");
+                System.out.printf("\n\t Teste com as entradas do treinamento");
+
+                // Mostrando as entradas
+                lin = 0;
+                while (lin < 2) {
+                    col = 0;
+                    while (col < 4) {
+                        System.out.printf("\n Entrada [%d] [%d]: %.2f", lin, col, entrada[lin][col]);
+                        col++;
+                    }
+                    lin++;
+                    System.out.printf("\n -------------------");
+                }
+
+                // Teste da rede
+                for (lin = 0; lin < 2; lin++) {
+                    teste = 0;
+
+                    for (col = 0; col < 4; col++) { // Somatório dos pesos
+                        teste += entrada[lin][col] * w[col];
+                    }
+                    teste += b;
+
+                    if (teste >= limiar) {
+                        yTeste = 1;
+                    } else {
+                        yTeste = -1;
+                    }
+
+                    System.out.printf("\n Saida da rede [%d]: %.2f", lin, yTeste);
+                }
+            }
+        }
+
+        scanner.close();
+        System.out.println("Programa encerrado.");
+    }
 
     public static void main(String[] args) {
-        SwingUtilities.invokeLater(Main::new);
+        Main perceptron = new Main();
+        perceptron.executarPerceptron();
     }
 
-    public Main() {
-        JFrame frame = new JFrame("Perceptron - Reconhecimento de Letras");
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(800, 800);
-        frame.setLayout(new BorderLayout());
-
-        // Painel principal
-        JPanel mainPanel = new JPanel();
-        mainPanel.setLayout(new GridLayout(3, 1, 10, 10)); // Três painéis empilhados, com espaçamento
-
-        // Criação das três matrizes
-        JPanel firstLetterPanel = createMatrixPanel(firstLetterMatrix, "Letra 1");
-        JPanel secondLetterPanel = createMatrixPanel(secondLetterMatrix, "Letra 2");
-        JPanel testPanel = createMatrixPanel(testMatrix, "Teste");
-
-        mainPanel.add(firstLetterPanel);
-        mainPanel.add(secondLetterPanel);
-        mainPanel.add(testPanel);
-
-        // Botões
-        JPanel buttonPanel = new JPanel();
-        JButton trainButton = new JButton("Treinar");
-        JButton testButton = new JButton("Testar");
-
-        // Eventos dos botões
-        trainButton.addActionListener(e -> trainPerceptron());
-        testButton.addActionListener(e -> testRecognition());
-
-        buttonPanel.add(trainButton);
-        buttonPanel.add(testButton);
-
-        frame.add(mainPanel, BorderLayout.CENTER);
-        frame.add(buttonPanel, BorderLayout.SOUTH);
-
-        frame.setVisible(true);
-        frame.setResizable(false);
-
-        initializeWeights(); // Inicializa os pesos aleatórios
-    }
-
-    private JPanel createMatrixPanel(int[][] matrix, String title) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new GridLayout(SIZE, SIZE));
-        panel.setBorder(BorderFactory.createTitledBorder(title));
-
-        int cellSize = 40;
-        Dimension buttonSize = new Dimension(cellSize, cellSize);
-
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                JButton button = new JButton();
-                button.setBackground(Color.WHITE);
-                button.setFocusable(false);
-                button.setPreferredSize(buttonSize);
-                final int row = i, col = j;
-
-                button.addActionListener(e -> togglePixel(button, matrix, row, col));
-                panel.add(button);
-            }
-        }
-
-        panel.setPreferredSize(new Dimension(SIZE * cellSize, SIZE * cellSize));
-        return panel;
-    }
-
-    private void togglePixel(JButton button, int[][] matrix, int row, int col) {
-        if (matrix[row][col] == 0) {
-            matrix[row][col] = 1;
-            button.setBackground(Color.BLACK);
-        } else {
-            matrix[row][col] = 0;
-            button.setBackground(Color.WHITE);
-        }
-    }
-
-    private void initializeWeights() {
-        Random random = new Random();
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                weights[i][j] = random.nextDouble() * 0.1 - 0.05; // Inicializa pesos com valores pequenos
-            }
-        }
-        bias = random.nextDouble() * 0.1 - 0.05; // Inicializa o bias com valor pequeno
-    }
-
-    private void trainPerceptron() {
-        // Treina com Letra 1 (d = 1) e Letra 2 (d = -1)
-        trainSingleMatrix(firstLetterMatrix, 1);
-        trainSingleMatrix(secondLetterMatrix, -1);
-
-        JOptionPane.showMessageDialog(null, "Treinamento concluído!", "Perceptron", JOptionPane.INFORMATION_MESSAGE);
-    }
-
-    private void trainSingleMatrix(int[][] letterMatrix, int desiredOutput) {
-        for (int epoch = 0; epoch < EPOCHS; epoch++) {
-            int output = predict(letterMatrix);  // Predição
-            int error = desiredOutput - output;  // Erro
-
-            if (error != 0) {  // Se houver erro, ajusta os pesos
-                for (int i = 0; i < SIZE; i++) {
-                    for (int j = 0; j < SIZE; j++) {
-                        weights[i][j] += LEARNING_RATE * error * letterMatrix[i][j];  // Ajuste dos pesos
-                    }
-                }
-                bias += LEARNING_RATE * error;  // Ajuste do viés
-            }
-        }
-    }
-
-    private int predict(int[][] inputMatrix) {
-        double sum = 0.0;
-        for (int i = 0; i < SIZE; i++) {
-            for (int j = 0; j < SIZE; j++) {
-                sum += weights[i][j] * inputMatrix[i][j];  // Soma ponderada
-            }
-        }
-        sum += bias;  // Soma do viés
-
-        // Função de ativação: se a soma for maior ou igual a zero, retorna 1 (Letra 1), caso contrário, -1 (Letra 2)
-        if (sum >= 0) {
-            return 1;  // Letra 1
-        } else {
-            return -1;  // Letra 2
-        }
-    }
-
-    private void testRecognition() {
-        int output = predict(testMatrix);
-
-        String result;
-        if (output == 1) {
-            result = "A matriz TESTE parece mais com a Letra 1!";
-        } else if (output == -1) {
-            result = "A matriz TESTE parece mais com a Letra 2!";
-        } else {
-            result = "Erro no reconhecimento.";
-        }
-
-        // Exibe a resposta do teste
-        JOptionPane.showMessageDialog(null, result, "Resultado do Teste", JOptionPane.INFORMATION_MESSAGE);
-    }
 }
