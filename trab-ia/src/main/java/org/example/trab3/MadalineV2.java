@@ -7,7 +7,9 @@ import java.util.Random;
 public class MadalineV2 {
     public static void main(String[] args) throws IOException {
         // Configuração de caminho
-        String caminho = "/home/alvin/Documentos/Github/python-trabs-IA-intelig-comp/trab-ia/src/main/java/org/example/trab3/";
+//        String caminho = "/home/alvin/Documentos/Github/python-trabs-IA-intelig-comp/trab-ia/src/main/java/org/example/trab3/";
+
+        String caminho = "C:\\Users\\Alvin\\Documents\\Github\\python-trab1-IA-regra-de-Hebb\\trab-ia\\src\\main\\java\\org\\example\\trab3\\";
 
         // Carregamento das entradas
         double[][] entAux = loadMatrix(caminho + "Ent.txt");
