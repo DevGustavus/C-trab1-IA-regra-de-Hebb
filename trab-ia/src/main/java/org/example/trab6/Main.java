@@ -283,7 +283,8 @@ public class Main {
 
     public static void main(String[] args) throws IOException, CsvValidationException {
         // Lendo dados do arquivo CSV
-        double[][] data = readCSV("/home/alvin/Documentos/Github/python-trabs-IA-intelig-comp/trab-ia/src/main/java/org/example/trab6/VALE3.csv");
+//        double[][] data = readCSV("/home/alvin/Documentos/Github/python-trabs-IA-intelig-comp/trab-ia/src/main/java/org/example/trab6/VALE3.csv");
+        double[][] data = readCSV("C:\\Users\\Alvin\\Documents\\Github\\python-trab1-IA-regra-de-Hebb\\trab-ia\\src\\main\\java\\org\\example\\trab6\\VALE3.csv");
 
         // Normalizando os dados e armazenando os parâmetros de normalização
         NormalizationParams params = normalizeData(data);
@@ -303,7 +304,7 @@ public class Main {
         Main nn = new Main(6, 10, 1);  // 6 inputs (ABERTURA, FECHAMENTO, VARIAÇÃO, MÍNIMO, MÁXIMO, VOLUME)
 
         // Treinando a rede
-        nn.train(inputs, targets, 100000, 0.001);
+        nn.train(inputs, targets, 20000, 0.01);
 
         // Pegando os dados do último dia
         double[] lastDayInput = new double[data[0].length];
