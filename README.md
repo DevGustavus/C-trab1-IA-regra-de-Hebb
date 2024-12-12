@@ -18,4 +18,4 @@
 
 Vídeo explicativo para os Trabalhos de: [Madaline](./trab-ia/src/main/java/org/example/trab3), [Perceptron multi camadas (com análise em PDF)](./trab-ia/src/main/java/org/example/trab5), [Mercado financeiro](./trab-ia/src/main/java/org/example/trab6).
 
-- [Link do vídeo]()
+- [Link do vídeo](https://www.youtube.com/watch?v=j3CGPBEmPo4)
